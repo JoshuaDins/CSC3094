@@ -53,7 +53,7 @@ class WorldModel(ABC):
 
         self._cuda = cfg.cuda
         self.train_freq = cfg.train_freq
-        self.eval_freq = cfg.eval_freq
+        self.eval_freq = cfg.get('eval', {}).get('evaluator', {}).get('eval_freq', None)
         self.rollout_length_scheduler = get_rollout_length_scheduler(cfg.rollout_length_scheduler)
 
         self.last_train_step = 0

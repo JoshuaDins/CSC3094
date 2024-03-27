@@ -54,6 +54,7 @@ def eval(
     while True:
         # TODO(pu): r_i, reward embedding
         policy_output = policy.forward(beta_index, obs, prev_action, prev_reward_e)
+        print(policy_output)
 
         actions = {i: a['action'] for i, a in policy_output.items()}
         actions = to_ndarray(actions)
@@ -88,9 +89,9 @@ if __name__ == "__main__":
     # Users should add their own model path here. Model path should lead to a model.
     # Absolute path is recommended.
     # In DI-engine, it is ``exp_name/ckpt/ckpt_best.pth.tar``.
-    model_path = './debug_minigrid_doorkey_ngu_ul298_er01_n32_rbs3e4_fixepseval/ckpt/ckpt_best.pth.tar',
+    model_path = 'C:/Users/joshd/University/CSC3094/DI-engine/dv3_grid_empty3/ckpt/ckpt_best.pth.tar'
     # model_path = 'model_path_placeholder',
-    cfg = '../config/minigrid_ngu_config.py'
+    cfg = 'C:/Users/joshd/University/CSC3094/DI-engine/dv3_grid_empty3/formatted_total_config.py'
 
     state_dict = torch.load(model_path, map_location='cpu')
     for i in range(0, 10):

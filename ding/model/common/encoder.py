@@ -188,6 +188,7 @@ class FCEncoder(nn.Module):
         self.obs_shape = obs_shape
         self.act = activation
         self.init = nn.Linear(obs_shape, hidden_size_list[0])
+        print(obs_shape)
 
         if res_block:
             assert len(set(hidden_size_list)) == 1, "Please indicate the same hidden size for res block parts"

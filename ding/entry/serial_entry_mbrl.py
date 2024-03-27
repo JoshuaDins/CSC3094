@@ -1,4 +1,6 @@
 from typing import Union, Optional, List, Any, Tuple
+
+import mlflow
 import torch
 import os
 from functools import partial
@@ -39,6 +41,7 @@ def mbrl_entry_setup(
 
     collector_env = create_env_manager(cfg.env.manager, [partial(env_fn, cfg=c) for c in collector_env_cfg])
     evaluator_env = create_env_manager(cfg.env.manager, [partial(env_fn, cfg=c) for c in evaluator_env_cfg])
+    evaluator_env.enable_save_replay("./replays/dv3_retrain/retrain1")
 
     collector_env.seed(cfg.seed)
     evaluator_env.seed(cfg.seed, dynamic_seed=False)
@@ -279,6 +282,7 @@ def serial_pipeline_dreamer(
         cfg.policy.random_collect_size = cfg.policy.random_collect_size // cfg.policy.collect.unroll_len
         random_collect(cfg.policy, policy, collector, collector_env, commander, env_buffer)
 
+
     while True:
         collect_kwargs = commander.step()
         # eval the policy
@@ -289,6 +293,7 @@ def serial_pipeline_dreamer(
                 collector.envstep,
                 policy_kwargs=dict(world_model=world_model)
             )
+            mlflow.log_metric("Mean Reward", reward['eval_episode_return_mean'], step=collector.envstep)
             if stop:
                 break
 

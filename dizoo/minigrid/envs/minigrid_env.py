@@ -36,7 +36,7 @@ class MiniGridEnv(BaseEnv):
         self._init_flag = False
         self._env_id = cfg.env_id
         self._flat_obs = cfg.flat_obs
-        self._full_obs = cfg.full_obs
+        self._full_obs = cfg.flat_obs
         self._onehot_obs = cfg.onehot_obs
         self._move_bonus = cfg.move_bonus
         self._save_replay = False

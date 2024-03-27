@@ -7,7 +7,7 @@ import numpy as np
 
 from ding import __TITLE__, __VERSION__, __AUTHOR__, __AUTHOR_EMAIL__
 from ding.config import read_config
-from .predefined_config import get_predefined_config
+from ding.entry.predefined_config import get_predefined_config
 
 
 def print_version(ctx: Context, param: Option, value: bool) -> None:

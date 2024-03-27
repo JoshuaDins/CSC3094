@@ -307,6 +307,7 @@ class DREAMERPolicy(Policy):
             action = torch.zeros((batch_size, self._cfg.collect.action_size)).to(self._device)
         else:
             #state = default_collate(list(state.values()))
+            print(state)
             latent = to_device(default_collate(list(zip(*state))[0]), self._device)
             action = to_device(default_collate(list(zip(*state))[1]), self._device)
             if len(action.shape) == 1:
