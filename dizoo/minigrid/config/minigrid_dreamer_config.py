@@ -1,8 +1,8 @@
 from easydict import EasyDict
-
+import torch
 from ding.entry import serial_pipeline_dreamer
 
-cuda = False
+cuda = True
 collector_env_num = 8
 evaluator_env_num = 5
 minigrid_dreamer_config = dict(
@@ -53,7 +53,7 @@ minigrid_dreamer_config = dict(
         eval=dict(evaluator=dict(eval_freq=5000, )),
         other=dict(
             # environment buffer
-            replay_buffer=dict(replay_buffer_size=500000, periodic_thruput_seconds=60),
+            replay_buffer=dict(replay_buffer_size=200000, periodic_thruput_seconds=60),
         ),
     ),
     world_model=dict(
@@ -93,4 +93,10 @@ minigrid_create_config = dict(
 minigrid_create_config = EasyDict(minigrid_create_config)
 
 if __name__ == '__main__':
-    serial_pipeline_dreamer((minigrid_dreamer_config, minigrid_create_config), seed=0, max_env_step=500000)
+    policy= serial_pipeline_dreamer((minigrid_dreamer_config, minigrid_create_config), seed=0, max_env_step=1024)
+
+    #torch.save(policy._model, 'policy_params.pth')
+    #model= policy._model
+    #print(model)
+    #total_params = sum(p.numel() for p in policy._model.parameters())
+    #print("Total params: {total_params}")

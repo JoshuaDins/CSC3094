@@ -41,7 +41,7 @@ def mbrl_entry_setup(
 
     collector_env = create_env_manager(cfg.env.manager, [partial(env_fn, cfg=c) for c in collector_env_cfg])
     evaluator_env = create_env_manager(cfg.env.manager, [partial(env_fn, cfg=c) for c in evaluator_env_cfg])
-    evaluator_env.enable_save_replay("./replays/dv3_retrain/retrain1")
+    evaluator_env.enable_save_replay("./replays/DV3_train/troubleshoot")
 
     collector_env.seed(cfg.seed)
     evaluator_env.seed(cfg.seed, dynamic_seed=False)
@@ -277,6 +277,9 @@ def serial_pipeline_dreamer(
 
     learner.call_hook('before_run')
 
+    total_samp=0
+    total_train_frames=0
+
     # prefill environment buffer
     if cfg.policy.get('random_collect_size', 0) > 0:
         cfg.policy.random_collect_size = cfg.policy.random_collect_size // cfg.policy.collect.unroll_len
@@ -296,6 +299,8 @@ def serial_pipeline_dreamer(
             mlflow.log_metric("Mean Reward", reward['eval_episode_return_mean'], step=collector.envstep)
             if stop:
                 break
+            #checkpoint_path = os.path.join('checkpoints', f'checkpoint_{collector.envstep}.pth')
+            #torch.save(policy, checkpoint_path)
 
         # train world model and fill imagination buffer
         steps = (
@@ -321,6 +326,18 @@ def serial_pipeline_dreamer(
             policy_kwargs=dict(world_model=world_model, envstep=collector.envstep, **collect_kwargs)
         )
         env_buffer.push(data, cur_collector_envstep=collector.envstep)
+
+        obs_tensor= torch.tensor(data[0]['obs'])
+        torch.save(obs_tensor, 'obs_tensor.pth')
+
+        total_samp+=len(data)
+        total_train_frames+=steps
+
+        log_interval = 1000
+        if collector.envstep % log_interval == 0:
+            mlflow.log_metric("Total Samples", total_samp, step=collector.envstep)
+            mlflow.log_metric("Total Train Frames", total_train_frames, step=collector.envstep)
+
 
         if collector.envstep >= max_env_step or learner.train_iter >= max_train_iter:
             break
