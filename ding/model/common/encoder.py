@@ -232,6 +232,7 @@ class FCEncoder(nn.Module):
             >>> x = torch.randn(1, 4)
             >>> output = fc(x)
         """
+        x= x.to(torch.float32)
         x = self.act(self.init(x))
         x = self.main(x)
         return x

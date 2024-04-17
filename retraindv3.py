@@ -30,7 +30,7 @@ if __name__ =="__main__":
     mlflow.log_param('max_step', 100000)
     mlflow.log_param('learning_rate', 3e-5)
     mlflow.log_param('discount_factor', 0.935)
-    mlflow.log_param('hidden_layer_sizes', [256, 128, 64, 64])
+    mlflow.log_param('hidden_layer_sizes', [200, 200, 200, 50, 7])
     mlflow.log_param('batch_size', 32)
     mlflow.log_param('eval_freq', 250)
     mlflow.log_param('exp_name', 'working_DK')
