@@ -26,14 +26,14 @@ model.load_state_dict(state_dict['model'])
 policy= DREAMERPolicy(cfg.policy, model=model)
 
 if __name__ =="__main__":
-    mlflow.log_param('env_id', 'MiniGrid-KeyCorridorS3R1-v0')
+    mlflow.log_param('env_id', 'MiniGrid-DoorKey-8x8-v0')
     mlflow.log_param('max_step', 100000)
     mlflow.log_param('learning_rate', 3e-5)
     mlflow.log_param('discount_factor', 0.935)
     mlflow.log_param('hidden_layer_sizes', [256, 128, 64, 64])
     mlflow.log_param('batch_size', 32)
     mlflow.log_param('eval_freq', 250)
-    mlflow.log_param('exp_name', 'working_kc2')
+    mlflow.log_param('exp_name', 'working_DK')
     mlflow.log_param('random_seed', 0)
 
     serial_pipeline_dreamer((minigrid_dreamer_config, minigrid_create_config), seed=0, env_setting=None, model=model)
