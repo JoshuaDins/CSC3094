@@ -16,7 +16,7 @@ mlflow.start_run
 #model_path = 'C:/Users/joshd/University/CSC3094/DI-engine/dv3_retrain/ckpt/ckpt_best.pth.tar'
 #model_path='C:/Users/joshd/University/CSC3094/DI-engine/DV3_train_empty2_240402_123007/ckpt/ckpt_best.pth.tar'
 #model_path='C:/Users/joshd/University/CSC3094/DI-engine/empty_troubleshoot_240408_135903/ckpt/ckpt_best.pth.tar'
-model_path='C:/Users/joshd/University/CSC3094/DI-engine/main_empty_cont_240415_141413/ckpt/ckpt_best.pth.tar'
+model_path='C:/Users/joshd/University/CSC3094/DI-engine/kcS3R1_240420_135507/ckpt/ckpt_best.pth.tar'
 state_dict= torch.load(model_path, map_location="cpu")
 
 cfg = compile_config(minigrid_dreamer_config, seed=0, env=None, auto=True, create_cfg=minigrid_create_config, save_cfg=True)

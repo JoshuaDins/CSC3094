@@ -16,12 +16,12 @@ collector_env_num = 8
 evaluator_env_num = 5
 
 minigrid_dreamer_config = dict(                            #change env
-    exp_name='test',
+    exp_name='DV3RDBD',
     env=dict(
         collector_env_num=collector_env_num,
         evaluator_env_num=evaluator_env_num,
         n_evaluator_episode=evaluator_env_num,
-        env_id='MiniGrid-Empty-8x8-v0',
+        env_id="MiniGrid-RedBlueDoors-8x8-v0",
         max_step=300,
         #stop_value=20,
         flat_obs=True,
@@ -65,11 +65,12 @@ minigrid_dreamer_config = dict(                            #change env
         train_freq=2,
         cuda=cuda,
         model=dict(
-            state_size=1344,                                        #normally for 8x8 is 1344, 7581 for 16x16, 5376 for obsmaze
+            state_size=2688,                                        #normally for 8x8 is 1344, 7581 for 16x16, 5376 for obsmaze
             obs_type='vector',
             action_size=7,
             action_type='discrete',
-            encoder_hidden_size_list=[200, 200, 200, 50, 7],
+            #encoder_hidden_size_list=[200, 200, 200, 50, 7],
+            encoder_hidden_size_list=[256, 128, 64, 64],
             reward_size=1,
             batch_size=16,
         ),
@@ -103,18 +104,18 @@ minigrid_create_config = EasyDict(minigrid_create_config)
 
 if __name__ == '__main__':
     #logging
-    mlflow.log_param('env_id', 'MiniGrid-DoorKey-8x8-v0')
+    mlflow.log_param('env_id', 'MiniGrid-RedBlueDoors-8x8-v0')
     mlflow.log_param('max_step', 100000)
     mlflow.log_param('learning_rate', 3e-5)
     mlflow.log_param('discount_factor', 0.997)
     mlflow.log_param('hidden_layer_sizes', [200, 200, 200, 50, 7])
     mlflow.log_param('batch_size', 16)
     mlflow.log_param('eval_freq', 1000)
-    mlflow.log_param('exp_name', 'working_DK')
+    mlflow.log_param('exp_name', 'DV3RDBD')
     mlflow.log_param('random_seed', 0)
 
     #train, reward logged in train loop
-    policy= serial_pipeline_dreamer((minigrid_dreamer_config, minigrid_create_config), seed=0, max_env_step=100000)
+    policy= serial_pipeline_dreamer((minigrid_dreamer_config, minigrid_create_config), seed=0, max_env_step=1000000)
     torch.save(policy.model)
 
     torch.save(policy._model, 'policy_params.pth')
