@@ -13,8 +13,8 @@ from ding.config import read_config, compile_config
 from ding.policy import create_policy, PolicyFactory
 from ding.reward_model import create_reward_model
 from ding.utils import set_pkg_seed
-
-
+import mlflow
+import numpy
 def serial_pipeline_onpolicy(
         input_cfg: Union[str, Tuple[dict, dict]],
         seed: int = 0,
@@ -55,6 +55,7 @@ def serial_pipeline_onpolicy(
     evaluator_env = create_env_manager(cfg.env.manager, [partial(env_fn, cfg=c) for c in evaluator_env_cfg])
     collector_env.seed(cfg.seed)
     evaluator_env.seed(cfg.seed, dynamic_seed=False)
+    evaluator_env.enable_save_replay("./replays/ppo_train/env1")
     set_pkg_seed(cfg.seed, use_cuda=cfg.policy.cuda)
     policy = create_policy(cfg.policy, model=model, enable_field=['learn', 'collect', 'eval', 'command'])
 
@@ -89,7 +90,12 @@ def serial_pipeline_onpolicy(
             if stop:
                 break
         # Collect data by default config n_sample/n_episode
+        #print(eval_info)
         new_data = collector.collect(train_iter=learner.train_iter, policy_kwargs=collect_kwargs)
+        avg_rew= eval_info['eval_episode_return_mean']
+        #rew= eval_info['eval_episode_return']
+        mlflow.log_metric('avg_reward_per_step', avg_rew, step=learner.train_iter)
+        #mlflow.log_metric('reward_per_step', rew, step=learner.train_iter)
 
         # Learn policy from collected data
         learner.train(new_data, collector.envstep)

@@ -19,6 +19,9 @@ from ding.policy import create_policy
 from ding.world_model import create_world_model
 from ding.entry.utils import random_collect
 
+import time
+import datetime as dt
+
 
 def mbrl_entry_setup(
         input_cfg: Union[str, Tuple[dict, dict]],
@@ -42,6 +45,12 @@ def mbrl_entry_setup(
     collector_env = create_env_manager(cfg.env.manager, [partial(env_fn, cfg=c) for c in collector_env_cfg])
     evaluator_env = create_env_manager(cfg.env.manager, [partial(env_fn, cfg=c) for c in evaluator_env_cfg])
     evaluator_env.enable_save_replay("./replays/DV3_train/troubleshoot")
+    obs_space=evaluator_env.observation_space
+    #print("Obs space info:")
+    #print(f"Type: {type(obs_space)}")
+    #print(f"Shape: {obs_space.shape}")
+    #print(f"Low: {obs_space.low}")
+    #print(f"High: {obs_space.high}")
 
     collector_env.seed(cfg.seed)
     evaluator_env.seed(cfg.seed, dynamic_seed=False)
@@ -307,6 +316,7 @@ def serial_pipeline_dreamer(
             cfg.world_model.pretrain
             if world_model.should_pretrain() else int(world_model.should_train(collector.envstep))
         )
+        start_steps=time.monotonic()
         for _ in range(steps):
             batch_size = learner.policy.get_attribute('batch_size')
             batch_length = cfg.policy.learn.batch_length
@@ -319,7 +329,9 @@ def serial_pipeline_dreamer(
             learner.train(
                 start, collector.envstep, policy_kwargs=dict(world_model=world_model, envstep=collector.envstep)
             )
-
+        end_steps=time.monotonic()
+        print(dt.datetime.today().strftime('%Y-%m-%d %H:%M:%S'))
+        print(f"steps loop took {end_steps-start_steps} seconds")
         # fill environment buffer
         data = collector.collect(
             train_iter=learner.train_iter,
