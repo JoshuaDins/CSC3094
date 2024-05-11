@@ -1,6 +1,10 @@
 # Created by .ignore support plugin (hsz.mobi)
 ### ArchLinuxPackages template
 !EvalReplays
+!EvalReplays/DV3_replays
+!EvalReplays/PPO_replays
+!replays
+
 *.tar
 *.tar.*
 *.jar
